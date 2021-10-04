@@ -16,6 +16,7 @@ public:
 
 	//Company 다이얼로그 버튼 및 크기 설정
 	void		SetCompanyDlg();
+	void		SetTitle();
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.

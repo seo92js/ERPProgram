@@ -55,4 +55,14 @@ void SaleDlg::SetSaleDlg()
 	int nSaleDlg_Height = 840;
 
 	MoveWindow(nSaleDlg_X, nSaleDlg_Y, nSaleDlg_Width, nSaleDlg_Height);
+
+	SetTitle();
+}
+
+void SaleDlg::SetTitle()
+{
+	int nTitle_Width = 1350;
+	int nTitle_Height = 45;
+
+	GetDlgItem(IDC_BTN_SALE_TITLE)->MoveWindow(0, 0, nTitle_Width, nTitle_Height);
 }

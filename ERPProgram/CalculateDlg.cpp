@@ -55,4 +55,14 @@ void CalculateDlg::SetCalculateDlg()
 	int nCalculateDlg_Height = 840;
 
 	MoveWindow(nCaculateDlg_X, nCaculateDlg_Y, nCalculateDlg_Width, nCalculateDlg_Height);
+
+	SetTitle();
+}
+
+void CalculateDlg::SetTitle()
+{
+	int nTitle_Width = 1350;
+	int nTitle_Height = 45;
+
+	GetDlgItem(IDC_BTN_CALCULATE_TITLE)->MoveWindow(0, 0, nTitle_Width, nTitle_Height);
 }

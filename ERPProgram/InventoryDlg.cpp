@@ -54,6 +54,14 @@ void InventoryDlg::SetInventoryDlg()
 	int nInventoryDlg_Height = 840;
 
 	MoveWindow(nInventoryDlg_X, nInventoryDlg_Y, nInventoryDlg_Width, nInventoryDlg_Height);
+
+	SetTitle();
 }
 
+void InventoryDlg::SetTitle()
+{
+	int nTitle_Width = 1350;
+	int nTitle_Height = 45;
 
+	GetDlgItem(IDC_BTN_INVENTORY_TITLE)->MoveWindow(0, 0, nTitle_Width, nTitle_Height);
+}
