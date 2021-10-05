@@ -90,7 +90,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -188,6 +188,7 @@
     <ClInclude Include="ERPProgram.h" />
     <ClInclude Include="ERPProgramDlg.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Ini.h" />
     <ClInclude Include="InventoryDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SaleDlg.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="CompanyDlg.cpp" />
     <ClCompile Include="ERPProgram.cpp" />
     <ClCompile Include="ERPProgramDlg.cpp" />
+    <ClCompile Include="Ini.cpp" />
     <ClCompile Include="InventoryDlg.cpp" />
     <ClCompile Include="SaleDlg.cpp" />
   </ItemGroup>
