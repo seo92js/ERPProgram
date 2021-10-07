@@ -45,10 +45,14 @@ BOOL InventoryDlg::OnInitDialog()
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 
+	m_IniInventory.SetFile("D:\\Test.Ini");
+
 	SetInventoryDlg();
 
 	InitAllInventoryList();
 	InitSelectInventoryList();
+
+	LoadAllInventoryList();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -170,7 +174,58 @@ void InventoryDlg::InitSelectInventoryList()
 	m_ListCtr_SelectInventory.InsertColumn(2, _T("수량"), LVCFMT_CENTER, 100);
 }
 
+void InventoryDlg::AddProduct(CString strProductName, CString strProductCount)
+{
+	int nCount = _ttoi(strProductCount);
+
+	m_IniInventory.SetSection(_T("자사몰"));
+	m_IniInventory.WriteInt(strProductName, nCount);
+
+	LoadAllInventoryList();
+}
+
 void InventoryDlg::OnBnClickedBtnProductAdd()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString strProductName, strProductCount, strMessage;
+
+	m_Edit_ProductName.GetWindowText(strProductName);
+	m_Edit_ProductCount.GetWindowText(strProductCount);
+
+	if (strProductName == "" || strProductCount == "")
+	{
+		AfxMessageBox(_T("품명 및 수량을 입력하세요"));
+		return;
+	}
+
+	strMessage.Format(_T("[ %s, %s개 ] 제품을 추가 하시겠습니까?"), strProductName, strProductCount);
+
+	if (IDYES == AfxMessageBox(strMessage, MB_YESNO))
+	{
+		AddProduct(strProductName, strProductCount);
+	}
+	else
+		return;
+}
+
+void InventoryDlg::LoadAllInventoryList()
+{
+	m_ListCtr_AllInventory.DeleteAllItems();
+
+	CStringList		strAllInventoryList, strAllInventoryValue;
+	CString			str;
+	POSITION		pos;
+
+	m_IniInventory.GetAllKeyValue(_T("자사몰"), &strAllInventoryList, &strAllInventoryValue);
+
+	int nCount = strAllInventoryList.GetCount();
+
+	for (int i = 0; i < nCount; i++)
+	{
+		pos = strAllInventoryList.FindIndex(i);
+		str = strAllInventoryList.GetAt(pos);
+
+		m_ListCtr_AllInventory.InsertItem(i, _T(""));
+		m_ListCtr_AllInventory.SetItem(i, 1, LVIF_TEXT, str, 0, 0, 0, NULL);
+	}
 }
