@@ -33,6 +33,7 @@ public:
 	void			InitAllInventoryList();
 	void			InitSelectInventoryList();
 	void			LoadAllInventoryList();
+	void			LoadSelectInventoryList(int nIndex);
 
 	//제품 추가기능
 	void			AddProduct(CString strProductName, CString strProductCount);
@@ -49,4 +50,5 @@ public:
 	CEdit			m_Edit_ProductName;
 	CEdit			m_Edit_ProductCount;
 	afx_msg void	OnBnClickedBtnProductAdd();
+	afx_msg void	OnClickListAllInventory(NMHDR* pNMHDR, LRESULT* pResult);
 };

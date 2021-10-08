@@ -34,6 +34,7 @@ void InventoryDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(InventoryDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_PRODUCT_ADD, &InventoryDlg::OnBnClickedBtnProductAdd)
+	ON_NOTIFY(NM_CLICK, IDC_LIST_ALL_INVENTORY, &InventoryDlg::OnClickListAllInventory)
 END_MESSAGE_MAP()
 
 
@@ -227,5 +228,75 @@ void InventoryDlg::LoadAllInventoryList()
 
 		m_ListCtr_AllInventory.InsertItem(i, _T(""));
 		m_ListCtr_AllInventory.SetItem(i, 1, LVIF_TEXT, str, 0, 0, 0, NULL);
+	}
+}
+
+void InventoryDlg::OnClickListAllInventory(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	int index = pNMItemActivate->iItem; // 클릭한 아이템의 인덱스 얻어옴
+
+	if (index >= 0 && index < m_ListCtr_AllInventory.GetItemCount()) // 표시된 아이템들중에 클릭시 아래 코드 실행
+	{
+		LoadSelectInventoryList(index);
+	}
+
+	*pResult = 0;
+}
+
+void InventoryDlg::LoadSelectInventoryList(int nIndex)
+{
+	CStringList strProductList;
+	CString		strSelectProduct, strTemp;
+
+	strSelectProduct = m_ListCtr_AllInventory.GetItemText(nIndex, 1);
+
+	m_ListCtr_SelectInventory.DeleteAllItems();
+
+	//모든 섹션 찾기
+	_TCHAR	buff[4096] = { 0x20, };
+	_TCHAR	sect[1024] = { 0x00, };
+
+	DWORD n = ::GetPrivateProfileSectionNames(buff, 4096, m_IniInventory.Filename);
+
+	int pos = 0;
+	BOOL bMakedSect = FALSE; // 하나의 섹션을 구성완료하면 TRUE하여 pos를 0으로 초기화
+	for (int i = 0; i < n; i++, pos++)
+	{
+		if (buff[i] != '\0')
+		{
+			if (bMakedSect) pos = 0;
+			memcpy(sect + pos, buff + i, 2);
+			bMakedSect = FALSE;
+			continue;
+		}
+		else
+		{
+			sect[i] = '\0';
+			strProductList.AddTail(sect);
+			memset(sect, 0x00, sizeof(sect));
+			bMakedSect = TRUE;
+		}
+	}
+
+	int nCount = strProductList.GetSize();
+
+	for (int i = 0; i < nCount; i++)
+	{
+		POSITION pos = strProductList.FindIndex(i);
+		strTemp		 = strProductList.GetAt(pos);
+
+		m_ListCtr_SelectInventory.InsertItem(i, _T(""));
+		m_ListCtr_SelectInventory.SetItem(i, 1, LVIF_TEXT, strTemp, 0, 0, 0, NULL);
+
+		m_IniInventory.SetSection(strTemp);
+
+		int nCount = m_IniInventory.GetInt(strSelectProduct, 0);
+
+		strTemp.Format(_T("%d"), nCount);
+
+		m_ListCtr_SelectInventory.SetItem(i, 2, LVIF_TEXT, strTemp, 0, 0, 0, NULL);
 	}
 }
