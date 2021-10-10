@@ -28,7 +28,6 @@ void InventoryDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST_ALL_INVENTORY, m_ListCtr_AllInventory);
 	DDX_Control(pDX, IDC_LIST_SELECT_INVENTORY, m_ListCtr_SelectInventory);
 	DDX_Control(pDX, IDC_EDIT_PRODUCT_NAME, m_Edit_ProductName);
-	DDX_Control(pDX, IDC_EDIT_PRODUCT_COUNT, m_Edit_ProductCount);
 }
 
 
@@ -46,14 +45,12 @@ BOOL InventoryDlg::OnInitDialog()
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 
-	m_IniInventory.SetFile("D:\\Test.Ini");
+	m_IniInventory.SetFile("D:\\제품리스트.Ini");
 
 	SetInventoryDlg();
-
+	 
 	InitAllInventoryList();
 	InitSelectInventoryList();
-
-	LoadAllInventoryList();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -72,10 +69,8 @@ void InventoryDlg::SetInventoryDlg()
 	SetPosition_AllInventory();
 	SetPosition_SelectInventory();
 	SetPosition_EditProductName();
-	SetPosition_EditProductCount();
 	SetPosition_BtnProductAdd();
 	SetPosition_StaticProductName();
-	SetPosition_StaticProductCount();
 }
 
 void InventoryDlg::SetTitle()
@@ -109,29 +104,19 @@ void InventoryDlg::SetPosition_SelectInventory()
 void InventoryDlg::SetPosition_EditProductName()
 {
 	int nEditProductName_X = 60;
-	int nEditProductName_Y = 620;
+	int nEditProductName_Y = 630;
 	int nEditProductName_Width = 180;
 	int nEditProductName_Height = 25;
 
 	GetDlgItem(IDC_EDIT_PRODUCT_NAME)->MoveWindow(nEditProductName_X, nEditProductName_Y, nEditProductName_Width, nEditProductName_Height);
 }
 
-void InventoryDlg::SetPosition_EditProductCount()
-{
-	int nEditProductCount_X = 60;
-	int nEditProductCount_Y = 660;
-	int nEditProductCount_Width = 180;
-	int nEditProductCount_Height = 25;
-
-	GetDlgItem(IDC_EDIT_PRODUCT_COUNT)->MoveWindow(nEditProductCount_X, nEditProductCount_Y, nEditProductCount_Width, nEditProductCount_Height);
-}
-
 void InventoryDlg::SetPosition_BtnProductAdd()
 {
 	int nBtnProductAdd_X = 250;
-	int nBtnProductAdd_Y = 620;
+	int nBtnProductAdd_Y = 630;
 	int nBtnProductAdd_Width = 70;
-	int nBtnProductAdd_Height = 65;
+	int nBtnProductAdd_Height = 25;
 
 	GetDlgItem(IDC_BTN_PRODUCT_ADD)->MoveWindow(nBtnProductAdd_X, nBtnProductAdd_Y, nBtnProductAdd_Width, nBtnProductAdd_Height);
 }
@@ -139,21 +124,11 @@ void InventoryDlg::SetPosition_BtnProductAdd()
 void InventoryDlg::SetPosition_StaticProductName()
 {
 	int nStaticProductName_X = 20;
-	int nStaticProductName_Y = 625;
+	int nStaticProductName_Y = 635;
 	int nStaticProductName_Width = 40;
 	int nStaticProductName_Height = 25;
 
 	GetDlgItem(IDC_STATIC_PRODUCT_NAME)->MoveWindow(nStaticProductName_X, nStaticProductName_Y, nStaticProductName_Width, nStaticProductName_Height);
-}
-
-void InventoryDlg::SetPosition_StaticProductCount()
-{
-	int nStaticProductCount_X = 20;
-	int nStaticProductCount_Y = 665;
-	int nStaticProductCount_Width = 40;
-	int nStaticProductCount_Height = 25;
-
-	GetDlgItem(IDC_STATIC_PRODUCT_COUNT)->MoveWindow(nStaticProductCount_X, nStaticProductCount_Y, nStaticProductCount_Width, nStaticProductCount_Height);
 }
 
 void InventoryDlg::InitAllInventoryList()
@@ -163,7 +138,7 @@ void InventoryDlg::InitAllInventoryList()
 	m_ListCtr_AllInventory.InsertColumn(0, _T(""), NULL, 0);
 	m_ListCtr_AllInventory.InsertColumn(1, _T("제품리스트"), LVCFMT_CENTER, 300);
 
-	//LoadAllProductList();
+	LoadAllInventoryList();
 }
 
 void InventoryDlg::InitSelectInventoryList()
@@ -175,12 +150,10 @@ void InventoryDlg::InitSelectInventoryList()
 	m_ListCtr_SelectInventory.InsertColumn(2, _T("수량"), LVCFMT_CENTER, 100);
 }
 
-void InventoryDlg::AddProduct(CString strProductName, CString strProductCount)
+void InventoryDlg::AddProduct(CString strProductName)
 {
-	int nCount = _ttoi(strProductCount);
-
-	m_IniInventory.SetSection(_T("자사몰"));
-	m_IniInventory.WriteInt(strProductName, nCount);
+	m_IniInventory.SetSection(_T("제품리스트"));
+	m_IniInventory.WriteInt(strProductName, 0);
 
 	LoadAllInventoryList();
 }
@@ -188,22 +161,21 @@ void InventoryDlg::AddProduct(CString strProductName, CString strProductCount)
 void InventoryDlg::OnBnClickedBtnProductAdd()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CString strProductName, strProductCount, strMessage;
+	CString strProductName, strMessage;
 
 	m_Edit_ProductName.GetWindowText(strProductName);
-	m_Edit_ProductCount.GetWindowText(strProductCount);
 
-	if (strProductName == "" || strProductCount == "")
+	if (strProductName == "")
 	{
-		AfxMessageBox(_T("품명 및 수량을 입력하세요"));
+		AfxMessageBox(_T("품명을 입력하세요"));
 		return;
 	}
 
-	strMessage.Format(_T("[ %s, %s개 ] 제품을 추가 하시겠습니까?"), strProductName, strProductCount);
+	strMessage.Format(_T("[ %s ] 제품을 추가 하시겠습니까?"), strProductName);
 
 	if (IDYES == AfxMessageBox(strMessage, MB_YESNO))
 	{
-		AddProduct(strProductName, strProductCount);
+		AddProduct(strProductName);
 	}
 	else
 		return;
@@ -217,7 +189,7 @@ void InventoryDlg::LoadAllInventoryList()
 	CString			str;
 	POSITION		pos;
 
-	m_IniInventory.GetAllKeyValue(_T("자사몰"), &strAllInventoryList, &strAllInventoryValue);
+	m_IniInventory.GetAllKeyValue(_T("제품리스트"), &strAllInventoryList, &strAllInventoryValue);
 
 	int nCount = strAllInventoryList.GetCount();
 
@@ -230,6 +202,7 @@ void InventoryDlg::LoadAllInventoryList()
 		m_ListCtr_AllInventory.SetItem(i, 1, LVIF_TEXT, str, 0, 0, 0, NULL);
 	}
 }
+
 
 void InventoryDlg::OnClickListAllInventory(NMHDR* pNMHDR, LRESULT* pResult)
 {
@@ -248,6 +221,7 @@ void InventoryDlg::OnClickListAllInventory(NMHDR* pNMHDR, LRESULT* pResult)
 
 void InventoryDlg::LoadSelectInventoryList(int nIndex)
 {
+	/*
 	CStringList strProductList;
 	CString		strSelectProduct, strTemp;
 
@@ -299,4 +273,5 @@ void InventoryDlg::LoadSelectInventoryList(int nIndex)
 
 		m_ListCtr_SelectInventory.SetItem(i, 2, LVIF_TEXT, strTemp, 0, 0, 0, NULL);
 	}
+	*/
 }

@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "Ini.h"
 
 
 // CompanyDlg 대화 상자
@@ -14,14 +15,38 @@ public:
 // 대화 상자 데이터입니다.
 	enum { IDD = IDD_COMPANY_DIALOG };
 
+public:
+	CIni			m_IniCompanyInfo;
+	CIni			m_IniCompanyStock;
+
 	//Company 다이얼로그 버튼 및 크기 설정
-	void		SetCompanyDlg();
-	void		SetTitle();
+	void			SetCompanyDlg();
+	void			SetTitle();
+	void			SetPosition_Company();
+	void			SetPosition_StaticCompany();
+	void			SetPosition_StaticManager();
+	void			SetPosition_StaticPhone();
+	void			SetPosition_EditCompany();
+	void			SetPosition_EditManager();
+	void			SetPosition_EditPhone();
+	void			SetPosition_BtnCompanyAdd();
+
+	//Company List 관련
+	void			InitCompanyList();
+	void			LoadCompanyList();
+
+	//업체 추가기능
+	void			AddCompany(CString strCompany, CString strManager, CString strPhone);
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
+	virtual void	DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
 	DECLARE_MESSAGE_MAP()
 public:
-	virtual BOOL OnInitDialog();
+	virtual BOOL	OnInitDialog();
+	CListCtrl		m_ListCtr_Company;
+	CEdit			m_Edit_Company;
+	CEdit			m_Edit_Manager;
+	CEdit			m_Edit_Phone;
+	afx_msg void OnBnClickedBtnCompanyAdd();
 };

@@ -24,10 +24,8 @@ public:
 	void			SetPosition_AllInventory();
 	void			SetPosition_SelectInventory();
 	void			SetPosition_EditProductName();
-	void			SetPosition_EditProductCount();
 	void			SetPosition_BtnProductAdd();
 	void			SetPosition_StaticProductName();
-	void			SetPosition_StaticProductCount();
 
 	//Inventory List 관련
 	void			InitAllInventoryList();
@@ -36,7 +34,7 @@ public:
 	void			LoadSelectInventoryList(int nIndex);
 
 	//제품 추가기능
-	void			AddProduct(CString strProductName, CString strProductCount);
+	void			AddProduct(CString strProductName);
 
 
 protected:
@@ -48,7 +46,7 @@ public:
 	CListCtrl		m_ListCtr_AllInventory;
 	CListCtrl		m_ListCtr_SelectInventory;
 	CEdit			m_Edit_ProductName;
-	CEdit			m_Edit_ProductCount;
+	
 	afx_msg void	OnBnClickedBtnProductAdd();
 	afx_msg void	OnClickListAllInventory(NMHDR* pNMHDR, LRESULT* pResult);
 };
