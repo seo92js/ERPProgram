@@ -46,6 +46,7 @@ BOOL InventoryDlg::OnInitDialog()
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 
 	m_IniInventory.SetFile("D:\\제품리스트.Ini");
+	m_IniCompanyStock.SetFile("D:\\업체상품리스트.ini");
 
 	SetInventoryDlg();
 	 
@@ -221,19 +222,26 @@ void InventoryDlg::OnClickListAllInventory(NMHDR* pNMHDR, LRESULT* pResult)
 
 void InventoryDlg::LoadSelectInventoryList(int nIndex)
 {
-	/*
+	
 	CStringList strProductList;
 	CString		strSelectProduct, strTemp;
-
-	strSelectProduct = m_ListCtr_AllInventory.GetItemText(nIndex, 1);
+	int			nStocknPrice[2];
+	int			nDefValue[2] = { 0,0 };
+	CFileFind	Find;
 
 	m_ListCtr_SelectInventory.DeleteAllItems();
+
+	BOOL		bRet = Find.FindFile(_T("D:\\업체상품리스트.ini"));
+
+	if (!bRet) return;
+
+	strSelectProduct = m_ListCtr_AllInventory.GetItemText(nIndex, 1);
 
 	//모든 섹션 찾기
 	_TCHAR	buff[4096] = { 0x20, };
 	_TCHAR	sect[1024] = { 0x00, };
 
-	DWORD n = ::GetPrivateProfileSectionNames(buff, 4096, m_IniInventory.Filename);
+	DWORD n = ::GetPrivateProfileSectionNames(buff, 4096, m_IniCompanyStock.Filename);
 
 	int pos = 0;
 	BOOL bMakedSect = FALSE; // 하나의 섹션을 구성완료하면 TRUE하여 pos를 0으로 초기화
@@ -265,13 +273,13 @@ void InventoryDlg::LoadSelectInventoryList(int nIndex)
 		m_ListCtr_SelectInventory.InsertItem(i, _T(""));
 		m_ListCtr_SelectInventory.SetItem(i, 1, LVIF_TEXT, strTemp, 0, 0, 0, NULL);
 
-		m_IniInventory.SetSection(strTemp);
+		m_IniCompanyStock.SetSection(strTemp);
+		m_IniCompanyStock.GetIntArray(strSelectProduct, nStocknPrice, 2, nDefValue);
 
-		int nCount = m_IniInventory.GetInt(strSelectProduct, 0);
+		int nCount = nStocknPrice[0];
 
 		strTemp.Format(_T("%d"), nCount);
 
 		m_ListCtr_SelectInventory.SetItem(i, 2, LVIF_TEXT, strTemp, 0, 0, 0, NULL);
 	}
-	*/
 }

@@ -16,6 +16,7 @@ public:
 	enum { IDD = IDD_COMPANY_DIALOG };
 
 public:
+	CIni			m_IniInventory;
 	CIni			m_IniCompanyInfo;
 	CIni			m_IniCompanyStock;
 
@@ -23,6 +24,8 @@ public:
 	void			SetCompanyDlg();
 	void			SetTitle();
 	void			SetPosition_Company();
+	void			SetPosition_CompanyInfo();
+	void			SetPosition_CompanyStock();
 	void			SetPosition_StaticCompany();
 	void			SetPosition_StaticManager();
 	void			SetPosition_StaticPhone();
@@ -33,7 +36,11 @@ public:
 
 	//Company List 관련
 	void			InitCompanyList();
+	void			InitCompanyInfo();
+	void			InitCompanyStock();
 	void			LoadCompanyList();
+	void			LoadCompanyInfo(int nIndex);
+	void			LoadCompanyStock(int nIndex);
 
 	//업체 추가기능
 	void			AddCompany(CString strCompany, CString strManager, CString strPhone);
@@ -48,5 +55,8 @@ public:
 	CEdit			m_Edit_Company;
 	CEdit			m_Edit_Manager;
 	CEdit			m_Edit_Phone;
-	afx_msg void OnBnClickedBtnCompanyAdd();
+	afx_msg void	OnBnClickedBtnCompanyAdd();
+	afx_msg void	OnClickListCompany(NMHDR* pNMHDR, LRESULT* pResult);
+	CListCtrl		m_ListCtr_CompanyInfo;
+	CListCtrl		m_ListCtr_CompanyStock;
 };

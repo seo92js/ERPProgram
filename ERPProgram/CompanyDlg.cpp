@@ -29,11 +29,14 @@ void CompanyDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_COMPANY, m_Edit_Company);
 	DDX_Control(pDX, IDC_EDIT_MANAGER, m_Edit_Manager);
 	DDX_Control(pDX, IDC_EDIT_PHONE, m_Edit_Phone);
+	DDX_Control(pDX, IDC_LIST_COMPANY_INFO, m_ListCtr_CompanyInfo);
+	DDX_Control(pDX, IDC_LIST_COMPANY_STOCK, m_ListCtr_CompanyStock);
 }
 
 
 BEGIN_MESSAGE_MAP(CompanyDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_COMPANY_ADD, &CompanyDlg::OnBnClickedBtnCompanyAdd)
+	ON_NOTIFY(NM_CLICK, IDC_LIST_COMPANY, &CompanyDlg::OnClickListCompany)
 END_MESSAGE_MAP()
 
 
@@ -46,12 +49,15 @@ BOOL CompanyDlg::OnInitDialog()
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 
-	m_IniCompanyInfo.SetFile("D:\\업체정보리스트.Ini");
-	m_IniCompanyStock.SetFile("D:\\업체상품리스트.Ini");
+	m_IniInventory.SetFile("D:\\제품리스트.ini");
+	m_IniCompanyInfo.SetFile("D:\\업체정보리스트.ini");
+	m_IniCompanyStock.SetFile("D:\\업체상품리스트.ini");
 
 	SetCompanyDlg();
 
 	InitCompanyList();
+	InitCompanyInfo();
+	InitCompanyStock();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
@@ -68,6 +74,8 @@ void CompanyDlg::SetCompanyDlg()
 
 	SetTitle();
 	SetPosition_Company();
+	SetPosition_CompanyInfo();
+	SetPosition_CompanyStock();
 	SetPosition_StaticCompany();
 	SetPosition_StaticManager();
 	SetPosition_StaticPhone();
@@ -93,6 +101,26 @@ void CompanyDlg::SetPosition_Company()
 	int nCompany_Height = 500;
 
 	m_ListCtr_Company.MoveWindow(nCompany_X, nCompany_Y, nCompany_Width, nCompany_Height);
+}
+
+void CompanyDlg::SetPosition_CompanyInfo()
+{
+	int nCompanyInfo_X = 330;
+	int nCompanyInfo_Y = 110;
+	int nCompanyInfo_Width = 550;
+	int nCompanyInfo_Height = 70;
+
+	m_ListCtr_CompanyInfo.MoveWindow(nCompanyInfo_X, nCompanyInfo_Y, nCompanyInfo_Width, nCompanyInfo_Height);
+}
+
+void CompanyDlg::SetPosition_CompanyStock()
+{
+	int nCompanyStock_X = 330;
+	int nCompanyStock_Y = 190;
+	int nCompanyStock_Width = 800;
+	int nCompanyStock_Height = 550;
+
+	m_ListCtr_CompanyStock.MoveWindow(nCompanyStock_X, nCompanyStock_Y, nCompanyStock_Width, nCompanyStock_Height);
 }
 
 void CompanyDlg::SetPosition_StaticCompany()
@@ -173,6 +201,26 @@ void CompanyDlg::InitCompanyList()
 	m_ListCtr_Company.InsertColumn(1, _T("업체리스트"), LVCFMT_CENTER, 300);
 
 	LoadCompanyList();
+}
+
+void CompanyDlg::InitCompanyInfo()
+{
+	m_ListCtr_CompanyInfo.SetExtendedStyle(LVS_EX_FULLROWSELECT);
+
+	m_ListCtr_CompanyInfo.InsertColumn(0, _T(""), NULL, 0);
+	m_ListCtr_CompanyInfo.InsertColumn(1, _T("업체명"), LVCFMT_CENTER, 300);
+	m_ListCtr_CompanyInfo.InsertColumn(2, _T("담당자"), LVCFMT_CENTER, 100);
+	m_ListCtr_CompanyInfo.InsertColumn(3, _T("연락처"), LVCFMT_CENTER, 150);
+}
+
+void CompanyDlg::InitCompanyStock()
+{
+	m_ListCtr_CompanyStock.SetExtendedStyle(LVS_EX_FULLROWSELECT);
+
+	m_ListCtr_CompanyStock.InsertColumn(0, _T(""), NULL, 0);
+	m_ListCtr_CompanyStock.InsertColumn(1, _T("취급품목"), LVCFMT_CENTER, 500);
+	m_ListCtr_CompanyStock.InsertColumn(2, _T("수량"), LVCFMT_CENTER, 150);
+	m_ListCtr_CompanyStock.InsertColumn(3, _T("공급가"), LVCFMT_CENTER, 150);
 }
 
 void CompanyDlg::AddCompany(CString strCompany, CString strManager, CString strPhone)
@@ -256,5 +304,79 @@ void CompanyDlg::LoadCompanyList()
 
 		m_ListCtr_Company.InsertItem(i, _T(""));
 		m_ListCtr_Company.SetItem(i, 1, LVIF_TEXT, strTemp, 0, 0, 0, NULL);
+	}
+}
+
+void CompanyDlg::OnClickListCompany(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	int index = pNMItemActivate->iItem; // 클릭한 아이템의 인덱스 얻어옴
+
+	if (index >= 0 && index < m_ListCtr_Company.GetItemCount()) // 표시된 아이템들중에 클릭시 아래 코드 실행
+	{
+		LoadCompanyInfo(index);
+		LoadCompanyStock(index);
+	}
+
+	*pResult = 0;
+}
+
+void CompanyDlg::LoadCompanyInfo(int nIndex)
+{
+	CString strSelectCompany, strTemp;
+	POSITION pos;
+
+	strSelectCompany = m_ListCtr_Company.GetItemText(nIndex, 1);
+
+	m_ListCtr_CompanyInfo.DeleteAllItems();
+
+	m_IniCompanyInfo.SetSection(strSelectCompany);
+
+	m_ListCtr_CompanyInfo.InsertItem(0, _T(""));
+	//업체명
+	m_ListCtr_CompanyInfo.SetItem(0, 1, LVIF_TEXT, strSelectCompany, 0, 0, 0, NULL);
+	//담당자
+	strTemp = m_IniCompanyInfo.GetString(_T("담당자"), _T(""));
+	m_ListCtr_CompanyInfo.SetItem(0, 2, LVIF_TEXT, strTemp, 0, 0, 0, NULL);
+	//연락처
+	strTemp = m_IniCompanyInfo.GetString(_T("연락처"), _T(""));
+	m_ListCtr_CompanyInfo.SetItem(0, 3, LVIF_TEXT, strTemp, 0, 0, 0, NULL);
+}
+
+void CompanyDlg::LoadCompanyStock(int nIndex)
+{
+	CStringList strAllInventoryList, strAllInventoryValue;
+	CString		str, strSelectCompany;
+	POSITION	pos;
+	int			nStocknPrice[2];
+	int			nDefValue[2] = { 0,0 };
+
+	m_ListCtr_CompanyStock.DeleteAllItems();
+
+	strSelectCompany = m_ListCtr_Company.GetItemText(nIndex, 1);
+
+	m_IniInventory.GetAllKeyValue(_T("제품리스트"), &strAllInventoryList, &strAllInventoryValue);
+
+	int nCount = strAllInventoryList.GetCount();
+
+	for (int i = 0; i < nCount; i++)
+	{
+		pos = strAllInventoryList.FindIndex(i);
+		str = strAllInventoryList.GetAt(pos);
+
+		m_ListCtr_CompanyStock.InsertItem(i, _T(""));
+		m_ListCtr_CompanyStock.SetItem(i, 1, LVIF_TEXT, str, 0, 0, 0, NULL);
+
+		m_IniCompanyStock.SetSection(strSelectCompany);
+		m_IniCompanyStock.GetIntArray(str, nStocknPrice, 2, nDefValue);
+
+		//재고
+		str.Format(_T("%d"), nStocknPrice[0]);
+		m_ListCtr_CompanyStock.SetItem(i, 2, LVIF_TEXT, str, 0, 0, 0, NULL);
+		//공급가
+		str.Format(_T("%d"), nStocknPrice[1]);
+		m_ListCtr_CompanyStock.SetItem(i, 3, LVIF_TEXT, str, 0, 0, 0, NULL);
 	}
 }
