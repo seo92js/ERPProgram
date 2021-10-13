@@ -36,6 +36,21 @@
 #define IDC_LIST_COMPANY_STOCK          1028
 #define IDC_EDIT_MODIFY                 1029
 #define IDC_BTN_SAVE                    1030
+#define IDC_COMBO_COMPANY               1032
+#define IDC_STATIC_CHANNEL              1033
+#define IDC_STATIC_NAME                 1034
+#define IDC_EDIT_NAME                   1035
+#define IDC_STATIC_PHONE_SALE           1037
+#define IDC_EDIT_PHONE_SALE             1038
+#define IDC_STATIC_POSTCODE             1039
+#define IDC_EDIT_POSTCODE               1040
+#define IDC_STATIC_ADDRESS              1041
+#define IDC_EDIT_ADDRESS                1042
+#define IDC_STATIC_NUM                  1043
+#define IDC_EDIT_NUM                    1044
+#define IDC_STATIC_PRODNAME             1045
+#define IDC_COMBO_PRODNAME              1046
+#define IDC_BTN_ORDER                   1047
 
 // Next default values for new objects
 // 
@@ -43,7 +58,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        138
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1031
+#define _APS_NEXT_CONTROL_VALUE         1048
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
