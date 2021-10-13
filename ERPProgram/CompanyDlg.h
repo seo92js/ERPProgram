@@ -20,6 +20,8 @@ public:
 	CIni			m_IniCompanyInfo;
 	CIni			m_IniCompanyStock;
 
+	int				m_nSavedItem, m_nSavedSubitem;
+
 	//Company 다이얼로그 버튼 및 크기 설정
 	void			SetCompanyDlg();
 	void			SetTitle();
@@ -33,6 +35,7 @@ public:
 	void			SetPosition_EditManager();
 	void			SetPosition_EditPhone();
 	void			SetPosition_BtnCompanyAdd();
+	void			SetPosition_BtnSave();
 
 	//Company List 관련
 	void			InitCompanyList();
@@ -59,4 +62,7 @@ public:
 	afx_msg void	OnClickListCompany(NMHDR* pNMHDR, LRESULT* pResult);
 	CListCtrl		m_ListCtr_CompanyInfo;
 	CListCtrl		m_ListCtr_CompanyStock;
+	afx_msg void	OnDblclkListCompanyStock(NMHDR* pNMHDR, LRESULT* pResult);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnBnClickedBtnSave();
 };

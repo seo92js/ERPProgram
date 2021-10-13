@@ -37,6 +37,8 @@ void CompanyDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CompanyDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_COMPANY_ADD, &CompanyDlg::OnBnClickedBtnCompanyAdd)
 	ON_NOTIFY(NM_CLICK, IDC_LIST_COMPANY, &CompanyDlg::OnClickListCompany)
+	ON_NOTIFY(NM_DBLCLK, IDC_LIST_COMPANY_STOCK, &CompanyDlg::OnDblclkListCompanyStock)
+	ON_BN_CLICKED(IDC_BTN_SAVE, &CompanyDlg::OnBnClickedBtnSave)
 END_MESSAGE_MAP()
 
 
@@ -83,6 +85,7 @@ void CompanyDlg::SetCompanyDlg()
 	SetPosition_EditManager();
 	SetPosition_EditPhone();
 	SetPosition_BtnCompanyAdd();
+	SetPosition_BtnSave();
 }
 
 void CompanyDlg::SetTitle()
@@ -107,7 +110,7 @@ void CompanyDlg::SetPosition_CompanyInfo()
 {
 	int nCompanyInfo_X = 330;
 	int nCompanyInfo_Y = 110;
-	int nCompanyInfo_Width = 550;
+	int nCompanyInfo_Width = 800;
 	int nCompanyInfo_Height = 70;
 
 	m_ListCtr_CompanyInfo.MoveWindow(nCompanyInfo_X, nCompanyInfo_Y, nCompanyInfo_Width, nCompanyInfo_Height);
@@ -126,7 +129,7 @@ void CompanyDlg::SetPosition_CompanyStock()
 void CompanyDlg::SetPosition_StaticCompany()
 {
 	int nStaticCompany_X = 20;
-	int nStaticCompany_Y = 625;
+	int nStaticCompany_Y = 635;
 	int nStaticCompany_Width = 40;
 	int nStaticCompany_Height = 25;
 
@@ -136,7 +139,7 @@ void CompanyDlg::SetPosition_StaticCompany()
 void CompanyDlg::SetPosition_StaticManager()
 {
 	int nStaticManager_X = 20;
-	int nStaticManager_Y = 665;
+	int nStaticManager_Y = 675;
 	int nStaticManager_Width = 40;
 	int nStaticManager_Height = 25;
 
@@ -146,7 +149,7 @@ void CompanyDlg::SetPosition_StaticManager()
 void CompanyDlg::SetPosition_StaticPhone()
 {
 	int nStaticPhone_X = 20;
-	int nStaticPhone_Y = 705;
+	int nStaticPhone_Y = 715;
 	int nStaticPhone_Width = 40;
 	int nStaticPhone_Height = 25;
 
@@ -156,7 +159,7 @@ void CompanyDlg::SetPosition_StaticPhone()
 void CompanyDlg::SetPosition_EditCompany()
 {
 	int nEditCompany_X = 60;
-	int nEditCompany_Y = 620;
+	int nEditCompany_Y = 630;
 	int nEditCompany_Width = 180;
 	int nEditCompany_Height = 25;
 
@@ -166,7 +169,7 @@ void CompanyDlg::SetPosition_EditCompany()
 void CompanyDlg::SetPosition_EditManager()
 {
 	int nEditManager_X = 60;
-	int nEditManager_Y = 660;
+	int nEditManager_Y = 670;
 	int nEditManager_Width = 180;
 	int nEditManager_Height = 25;
 
@@ -176,7 +179,7 @@ void CompanyDlg::SetPosition_EditManager()
 void CompanyDlg::SetPosition_EditPhone()
 {
 	int nEditPhone_X = 60;
-	int nEditPhone_Y = 700;
+	int nEditPhone_Y = 710;
 	int nEditPhone_Width = 180;
 	int nEditPhone_Height = 25;
 
@@ -186,11 +189,21 @@ void CompanyDlg::SetPosition_EditPhone()
 void CompanyDlg::SetPosition_BtnCompanyAdd()
 {
 	int nBtnCompanyAdd_X = 250;
-	int nBtnCompanyAdd_Y = 620;
+	int nBtnCompanyAdd_Y = 630;
 	int nBtnCompanyAdd_Width = 70;
-	int nBtnCompanyAdd_Height = 65;
+	int nBtnCompanyAdd_Height = 105;
 	  
 	GetDlgItem(IDC_BTN_COMPANY_ADD)->MoveWindow(nBtnCompanyAdd_X, nBtnCompanyAdd_Y, nBtnCompanyAdd_Width, nBtnCompanyAdd_Height);
+}
+
+void CompanyDlg::SetPosition_BtnSave()
+{
+	int nBtnSave_X = 1140;
+	int nBtnSave_Y = 680;
+	int nBtnSave_Width = 80;
+	int nBtnSave_Height = 60;
+
+	GetDlgItem(IDC_BTN_SAVE)->MoveWindow(nBtnSave_X, nBtnSave_Y, nBtnSave_Width, nBtnSave_Height);
 }
 
 void CompanyDlg::InitCompanyList()
@@ -209,8 +222,8 @@ void CompanyDlg::InitCompanyInfo()
 
 	m_ListCtr_CompanyInfo.InsertColumn(0, _T(""), NULL, 0);
 	m_ListCtr_CompanyInfo.InsertColumn(1, _T("업체명"), LVCFMT_CENTER, 300);
-	m_ListCtr_CompanyInfo.InsertColumn(2, _T("담당자"), LVCFMT_CENTER, 100);
-	m_ListCtr_CompanyInfo.InsertColumn(3, _T("연락처"), LVCFMT_CENTER, 150);
+	m_ListCtr_CompanyInfo.InsertColumn(2, _T("담당자"), LVCFMT_CENTER, 200);
+	m_ListCtr_CompanyInfo.InsertColumn(3, _T("연락처"), LVCFMT_CENTER, 300);
 }
 
 void CompanyDlg::InitCompanyStock()
@@ -379,4 +392,90 @@ void CompanyDlg::LoadCompanyStock(int nIndex)
 		str.Format(_T("%d"), nStocknPrice[1]);
 		m_ListCtr_CompanyStock.SetItem(i, 3, LVIF_TEXT, str, 0, 0, 0, NULL);
 	}
+}
+
+void CompanyDlg::OnDblclkListCompanyStock(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	LPNMITEMACTIVATE pNMITEM = (LPNMITEMACTIVATE)pNMHDR;
+
+
+	m_nSavedItem = pNMITEM->iItem;
+	m_nSavedSubitem = pNMITEM->iSubItem;
+
+	if (pNMITEM->iSubItem == 0)
+		return;
+
+	if (pNMITEM->iItem != -1)
+	{
+		CRect rect;
+
+		if (pNMITEM->iSubItem == 0)
+		{
+			m_ListCtr_CompanyStock.GetItemRect(pNMITEM->iItem, rect, LVIR_BOUNDS);
+			rect.right = rect.left + m_ListCtr_CompanyStock.GetColumnWidth(0);
+		}
+		else
+		{
+			m_ListCtr_CompanyStock.GetSubItemRect(pNMITEM->iItem, pNMITEM->iSubItem, LVIR_BOUNDS, rect);
+		}
+
+		m_ListCtr_CompanyStock.ClientToScreen(rect);
+		this->ScreenToClient(rect);
+
+		GetDlgItem(IDC_EDIT_MODIFY)->SetWindowText(m_ListCtr_CompanyStock.GetItemText(pNMITEM->iItem, pNMITEM->iSubItem));
+		GetDlgItem(IDC_EDIT_MODIFY)->SetWindowPos(NULL, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, SWP_SHOWWINDOW);
+		GetDlgItem(IDC_EDIT_MODIFY)->SetFocus();
+	}
+
+
+	*pResult = 0;
+}
+
+
+BOOL CompanyDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		if (pMsg->wParam == VK_RETURN) // ENTER키 눌릴 시
+		{
+			if (pMsg->hwnd == GetDlgItem(IDC_EDIT_MODIFY)->GetSafeHwnd())
+			{
+				CString str;
+				GetDlgItemText(IDC_EDIT_MODIFY, str);
+				m_ListCtr_CompanyStock.SetItemText(m_nSavedItem, m_nSavedSubitem, str);
+				GetDlgItem(IDC_EDIT_MODIFY)->SetWindowPos(NULL, 0, 0, 0, 0, SWP_HIDEWINDOW);
+			}
+			return TRUE;
+		}
+
+		else if (pMsg->wParam == VK_SPACE) //스페이스 바
+			return TRUE;
+	}
+
+	return CDialogEx::PreTranslateMessage(pMsg);
+}
+
+
+void CompanyDlg::OnBnClickedBtnSave()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	int nCount = m_ListCtr_CompanyStock.GetItemCount();
+
+	for (int i = 0; i < nCount; i++)
+	{
+		CString strProduct = m_ListCtr_CompanyStock.GetItemText(i, 1);
+
+		int nData[2];
+
+		nData[0] = _ttoi(m_ListCtr_CompanyStock.GetItemText(i, 2));
+		nData[1] = _ttoi(m_ListCtr_CompanyStock.GetItemText(i, 3));
+
+		m_IniCompanyStock.WriteIntArray(strProduct, nData,2);
+	}
+
 }
