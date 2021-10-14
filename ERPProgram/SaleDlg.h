@@ -20,6 +20,8 @@ public:
 	CIni				m_IniCompanyInfo;
 	CIni				m_IniCompanyStock;
 
+	void				Init();
+
 	//Sale 다이얼로그 버튼 및 크기 설정
 	void				SetSaleDlg();
 	void				SetTitle();
@@ -38,14 +40,18 @@ public:
 	void				SetPosition_EditNum();
 	void				SetPosition_ComboProdName();
 	void				SetPosition_BtnOrder();
+	void				SetPosition_SaleLog();
 
 	//
+	void				InitSaleLogList();
 	void				LoadCompanyList();
 	void				LoadCompanyStock();
 
 	//
 	void				WriteCSV(CString strChannel, CString strName, CString strPhone, CString strPostCode
 								,CString strAddress, CString strNum, CString strProdName, CString strSum);
+
+	void				LoadCSV();
 
 protected:
 	virtual void		DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
@@ -59,6 +65,7 @@ public:
 	CEdit				m_Edit_PostCode;
 	CEdit				m_Edit_Address;
 	CEdit				m_Edit_Num;
-	CComboBox m_Combo_ProdName;
-	afx_msg void OnBnClickedBtnOrder();
+	CComboBox			m_Combo_ProdName;
+	afx_msg void		OnBnClickedBtnOrder();
+	CListCtrl			m_ListCtr_SaleLog;
 };

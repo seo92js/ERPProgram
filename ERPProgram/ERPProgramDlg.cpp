@@ -207,6 +207,8 @@ void CERPProgramDlg::OnBnClickedBtnInventory()
 	ShowCompanyDlg(SW_HIDE);
 	ShowCaculateDlg(SW_HIDE);
 	ShowSaleDlg(SW_HIDE);
+
+	m_pInventoryDlg->Init();
 }
 
 
@@ -217,6 +219,8 @@ void CERPProgramDlg::OnBnClickedBtnCompany()
 	ShowInventoryDlg(SW_HIDE);
 	ShowCaculateDlg(SW_HIDE);
 	ShowSaleDlg(SW_HIDE);
+
+	m_pCompanyDlg->Init();
 }
 
 
@@ -237,6 +241,8 @@ void CERPProgramDlg::OnBnClickedBtnSale()
 	ShowInventoryDlg(SW_HIDE);
 	ShowCompanyDlg(SW_HIDE);
 	ShowCaculateDlg(SW_HIDE);
+
+	m_pSaleDlg->Init();
 }
 
 void CERPProgramDlg::CreateInventoryDlg()

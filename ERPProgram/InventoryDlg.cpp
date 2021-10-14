@@ -51,11 +51,20 @@ BOOL InventoryDlg::OnInitDialog()
 	SetInventoryDlg();
 	 
 	InitAllInventoryList();
+	
 	InitSelectInventoryList();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
 }
+
+void InventoryDlg::Init()
+{
+	LoadAllInventoryList();
+
+	m_ListCtr_SelectInventory.DeleteAllItems();
+}
+
 
 void InventoryDlg::SetInventoryDlg()
 {
@@ -149,6 +158,7 @@ void InventoryDlg::InitSelectInventoryList()
 	m_ListCtr_SelectInventory.InsertColumn(0, _T(""), NULL, 0);
 	m_ListCtr_SelectInventory.InsertColumn(1, _T("유통채널"), LVCFMT_CENTER, 300);
 	m_ListCtr_SelectInventory.InsertColumn(2, _T("수량"), LVCFMT_CENTER, 100);
+
 }
 
 void InventoryDlg::AddProduct(CString strProductName)

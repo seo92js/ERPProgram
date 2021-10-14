@@ -65,6 +65,13 @@ BOOL CompanyDlg::OnInitDialog()
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
 }
 
+void CompanyDlg::Init()
+{
+	LoadCompanyList();
+	m_ListCtr_CompanyInfo.DeleteAllItems();
+	m_ListCtr_CompanyStock.DeleteAllItems();
+}
+
 void CompanyDlg::SetCompanyDlg()
 {
 	int nCompanyDlg_X = 120;
@@ -224,6 +231,7 @@ void CompanyDlg::InitCompanyInfo()
 	m_ListCtr_CompanyInfo.InsertColumn(1, _T("업체명"), LVCFMT_CENTER, 300);
 	m_ListCtr_CompanyInfo.InsertColumn(2, _T("담당자"), LVCFMT_CENTER, 200);
 	m_ListCtr_CompanyInfo.InsertColumn(3, _T("연락처"), LVCFMT_CENTER, 300);
+
 }
 
 void CompanyDlg::InitCompanyStock()
@@ -234,6 +242,7 @@ void CompanyDlg::InitCompanyStock()
 	m_ListCtr_CompanyStock.InsertColumn(1, _T("취급품목"), LVCFMT_CENTER, 500);
 	m_ListCtr_CompanyStock.InsertColumn(2, _T("수량"), LVCFMT_CENTER, 150);
 	m_ListCtr_CompanyStock.InsertColumn(3, _T("공급가"), LVCFMT_CENTER, 150);
+
 }
 
 void CompanyDlg::AddCompany(CString strCompany, CString strManager, CString strPhone)

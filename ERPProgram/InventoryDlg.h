@@ -19,6 +19,8 @@ public:
 	CIni			m_IniInventory;
 	CIni			m_IniCompanyStock;
 
+	void			Init();
+
 	//InventoryDlg 다이얼로그 버튼 및 크기 설정
 	void			SetInventoryDlg();
 	void			SetTitle();

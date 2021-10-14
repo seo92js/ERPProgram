@@ -32,6 +32,7 @@ void SaleDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_ADDRESS, m_Edit_Address);
 	DDX_Control(pDX, IDC_EDIT_NUM, m_Edit_Num);
 	DDX_Control(pDX, IDC_COMBO_PRODNAME, m_Combo_ProdName);
+	DDX_Control(pDX, IDC_LIST_SALELOG, m_ListCtr_SaleLog);
 }
 
 
@@ -55,11 +56,23 @@ BOOL SaleDlg::OnInitDialog()
 
 	SetSaleDlg();
 
+	InitSaleLogList();
+
 	LoadCompanyList();
+
 	LoadCompanyStock();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
+}
+
+void SaleDlg::Init()
+{
+	LoadCSV();
+
+	LoadCompanyList();
+
+	LoadCompanyStock();
 }
 
 void SaleDlg::SetSaleDlg()
@@ -86,6 +99,7 @@ void SaleDlg::SetSaleDlg()
 	SetPosition_EditNum();
 	SetPosition_ComboProdName();
 	SetPosition_BtnOrder();
+	SetPosition_SaleLog();
 
 	SetTitle();
 }
@@ -248,6 +262,34 @@ void SaleDlg::SetPosition_BtnOrder()
 	GetDlgItem(IDC_BTN_ORDER)->MoveWindow(nBtnOrder_X, nBtnOrder_Y, nBtnOrder_Width, nBtnOrder_Height);
 }
 
+void SaleDlg::SetPosition_SaleLog()
+{
+	int nSaleLog_X = 20;
+	int nSaleLog_Y = 140;
+	int nSaleLog_Width = 1150;
+	int nSaleLog_Height = 650;
+
+	m_ListCtr_SaleLog.MoveWindow(nSaleLog_X, nSaleLog_Y, nSaleLog_Width, nSaleLog_Height);
+}
+
+void SaleDlg::InitSaleLogList()
+{
+	m_ListCtr_SaleLog.SetExtendedStyle(LVS_EX_FULLROWSELECT);
+
+	m_ListCtr_SaleLog.InsertColumn(0, _T(""), NULL, 0);
+	m_ListCtr_SaleLog.InsertColumn(1, _T("날짜"), LVCFMT_CENTER, 100);
+	m_ListCtr_SaleLog.InsertColumn(2, _T("채널"), LVCFMT_CENTER, 100);
+	m_ListCtr_SaleLog.InsertColumn(3, _T("수령인"), LVCFMT_CENTER, 70);
+	m_ListCtr_SaleLog.InsertColumn(4, _T("연락처"), LVCFMT_CENTER, 100);
+	m_ListCtr_SaleLog.InsertColumn(5, _T("우편번호"), LVCFMT_CENTER, 70);
+	m_ListCtr_SaleLog.InsertColumn(6, _T("주소"), LVCFMT_CENTER, 390);
+	m_ListCtr_SaleLog.InsertColumn(7, _T("수량"), LVCFMT_CENTER, 70);
+	m_ListCtr_SaleLog.InsertColumn(8, _T("물품명"), LVCFMT_CENTER, 100);
+	m_ListCtr_SaleLog.InsertColumn(9, _T("금액(수량*물품액)"), LVCFMT_CENTER, 150);
+
+	LoadCSV();
+}
+
 void SaleDlg::LoadCompanyList()
 {
 	CStringList strCompanyList;
@@ -325,9 +367,7 @@ void SaleDlg::WriteCSV(CString strChannel, CString strName, CString strPhone, CS
 
 	GetLocalTime(&lpSystemTime); 
 
-
 	strCSVPath.Format(_T("D:\\%04d.%02d_정산내역.csv"), lpSystemTime.wYear, lpSystemTime.wMonth);
-
 
 	bCheck = fileFind.FindFile(strCSVPath);
 
@@ -336,9 +376,6 @@ void SaleDlg::WriteCSV(CString strChannel, CString strName, CString strPhone, CS
 		AfxMessageBox(_T("CSV file open Fail"));
 		return;
 	}
-
-	USHORT nShort = 0xfeff;  // Unicode BOM(Byte Order Mark).
-	file.Write(&nShort, 2);
 
 	if (!bCheck)
 	{
@@ -360,7 +397,6 @@ void SaleDlg::WriteCSV(CString strChannel, CString strName, CString strPhone, CS
 void SaleDlg::OnBnClickedBtnOrder()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-
 	if (!(IDYES == AfxMessageBox(_T("발주확인 하시겠습니까?"), MB_YESNO)))
 		return;
 
@@ -414,4 +450,64 @@ void SaleDlg::OnBnClickedBtnOrder()
 	nStocknPrice[0] = nStocknPrice[0] - _ttoi(strNum);
 
 	m_IniCompanyStock.WriteIntArray(strProdName, nStocknPrice, 2);
+
+	LoadCSV();
+}
+
+void SaleDlg::LoadCSV()
+{
+	CString		strCSVPath;
+	BOOL		bCheck = FALSE;
+
+	CFileFind	fileFind;
+	FILE*		fp;
+	CString		strTemp, strParsing, strToken;
+
+	SYSTEMTIME  lpSystemTime;
+
+	GetLocalTime(&lpSystemTime);
+
+	m_ListCtr_SaleLog.DeleteAllItems();
+
+	strCSVPath.Format(_T("D:\\%04d.%02d_정산내역.csv"), lpSystemTime.wYear, lpSystemTime.wMonth);
+
+	//파일 없으면 return
+	bCheck = fileFind.FindFile(strCSVPath);
+	if (!bCheck)	return;
+
+	fopen_s(&fp, (CStringA)strCSVPath, "r");
+
+	char szContent[2048] = { 0, };
+	memset(szContent, NULL, 2048);
+
+	fgets(szContent, 2048, fp);
+
+
+	strTemp.Format(_T("%s"), szContent);
+
+	int nLine = 1;
+
+	while (true)
+	{
+		//한줄씩 sub
+		AfxExtractSubString(strParsing, strTemp, nLine++, '\r');
+
+		//마지막이면 break
+		if (strParsing == "")
+		{
+			memset(szContent, NULL, 2048);
+			break;
+		}
+
+		m_ListCtr_SaleLog.InsertItem(nLine - 1, _T(""));
+
+		int nSubString = 0;
+
+		while (AfxExtractSubString(strToken, strParsing, nSubString++, '\t'))
+		{
+			m_ListCtr_SaleLog.SetItem(nLine - 2, nSubString, LVIF_TEXT, strToken, 0, 0, 0, NULL);
+		}
+	}
+
+	fclose(fp); //파일 닫기
 }
